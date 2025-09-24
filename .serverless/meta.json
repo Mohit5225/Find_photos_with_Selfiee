@@ -1,0 +1,347 @@
+{
+  "C:\\Users\\mohit\\Desktop\\python\\Find_photos_with_Selfiee\\serverless.yml": {
+    "versionFramework": "4.19.1",
+    "servicePath": "C:\\Users\\mohit\\Desktop\\python\\Find_photos_with_Selfiee\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "org": "orgg1",
+      "service": "wedding-photo-app",
+      "provider": {
+        "name": "aws",
+        "runtime": "python3.9",
+        "region": "ap-south-1",
+        "stage": "dev",
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "WeddingsTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "Weddings",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "WeddingID",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "WeddingID",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            },
+            "PhotosTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "Photos",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "ImageKey",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "ImageKey",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            },
+            "GuestSessionsTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "GuestSessions",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "SessionID",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "SessionID",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "TimeToLiveSpecification": {
+                  "AttributeName": "ExpiresAt",
+                  "Enabled": true
+                },
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-ap-south-1-e4ac7174-e4ae",
+              "Export": {
+                "Name": "sls-wedding-photo-app-dev-ServerlessDeploymentBucketName"
+              }
+            }
+          }
+        }
+      },
+      "resources": {
+        "Resources": {
+          "WeddingsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "Weddings",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "WeddingID",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "WeddingID",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          },
+          "PhotosTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "Photos",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "ImageKey",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "ImageKey",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          },
+          "GuestSessionsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "GuestSessions",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "SessionID",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "SessionID",
+                  "KeyType": "HASH"
+                }
+              ],
+              "TimeToLiveSpecification": {
+                "AttributeName": "ExpiresAt",
+                "Enabled": true
+              },
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "python3.9",
+      "region": "ap-south-1",
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "WeddingsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "Weddings",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "WeddingID",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "WeddingID",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          },
+          "PhotosTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "Photos",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "ImageKey",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "ImageKey",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          },
+          "GuestSessionsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "GuestSessions",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "SessionID",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "SessionID",
+                  "KeyType": "HASH"
+                }
+              ],
+              "TimeToLiveSpecification": {
+                "AttributeName": "ExpiresAt",
+                "Enabled": true
+              },
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-ap-south-1-e4ac7174-e4ae",
+            "Export": {
+              "Name": "sls-wedding-photo-app-dev-ServerlessDeploymentBucketName"
+            }
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "# \"org\" ensures this Service is used with the correct Serverless Framework Access Key.\r\norg: orgg1\r\nservice: wedding-photo-app\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: python3.9\r\n  region: ap-south-1 # You can change this to your preferred region\r\n\r\nresources:\r\n  Resources:\r\n    # Definition for our Weddings Table\r\n    WeddingsTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: Weddings\r\n        AttributeDefinitions:\r\n          - AttributeName: WeddingID\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: WeddingID\r\n            KeyType: HASH\r\n        BillingMode: PAY_PER_REQUEST\r\n\r\n    # Definition for our Photos Table\r\n    PhotosTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: Photos\r\n        AttributeDefinitions:\r\n          - AttributeName: ImageKey\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: ImageKey\r\n            KeyType: HASH\r\n        BillingMode: PAY_PER_REQUEST\r\n\r\n    # Definition for our NEW GuestSessions Table\r\n    GuestSessionsTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: GuestSessions\r\n        AttributeDefinitions:\r\n          - AttributeName: SessionID\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: SessionID\r\n            KeyType: HASH\r\n        # This is the important part for automatic cleanup\r\n        TimeToLiveSpecification:\r\n          AttributeName: ExpiresAt\r\n          Enabled: true\r\n        BillingMode: PAY_PER_REQUEST",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "orgId": "4e0fed91-d9dd-4c9f-894f-89f1350c5b0b",
+    "orgName": "orgg1",
+    "userId": "rWnNRDn7w1vGW8wF0X",
+    "userName": "orgg1",
+    "serviceProviderAwsAccountId": "459858848789",
+    "serviceProviderAwsCfStackName": "wedding-photo-app-dev",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:ap-south-1:459858848789:stack/wedding-photo-app-dev/40019f60-8f4c-11f0-ba12-0ad48074dd47",
+    "serviceProviderAwsCfStackCreated": "2025-09-11T20:16:51.235Z",
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": "CREATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-ap-south-1-e4ac7174-e4ae",
+        "ExportName": "sls-wedding-photo-app-dev-ServerlessDeploymentBucketName"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "WeddingsTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "Weddings",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "WeddingID",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "WeddingID",
+                "KeyType": "HASH"
+              }
+            ],
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        },
+        "PhotosTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "Photos",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "ImageKey",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "ImageKey",
+                "KeyType": "HASH"
+              }
+            ],
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        },
+        "GuestSessionsTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "GuestSessions",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "SessionID",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "SessionID",
+                "KeyType": "HASH"
+              }
+            ],
+            "TimeToLiveSpecification": {
+              "AttributeName": "ExpiresAt",
+              "Enabled": true
+            },
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-ap-south-1-e4ac7174-e4ae",
+          "Export": {
+            "Name": "sls-wedding-photo-app-dev-ServerlessDeploymentBucketName"
+          }
+        }
+      }
+    }
+  }
+}

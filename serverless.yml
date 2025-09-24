@@ -1,0 +1,88 @@
+org: orgg1
+service: wedding-photo-app
+
+provider:
+  name: aws
+  # REMOVED runtime: python3.9 because we are using Docker
+  region: ap-south-1
+  ecr:
+    images:
+      appimage:
+        path: . # The Dockerfile is in the root directory
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: ["rekognition:IndexFaces", "rekognition:SearchFacesByImage"]
+          Resource: "arn:aws:rekognition:ap-south-1:459858848789:collection/*"
+        - Effect: "Allow"
+          Action: ["s3:GetObject"]
+          Resource: "arn:aws:s3:::wedding-photoss/*"
+        - Effect: "Allow"
+          Action: ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem"]
+          Resource: 
+            - "arn:aws:dynamodb:ap-south-1:459858848789:table/Photos"
+            - "arn:aws:dynamodb:ap-south-1:459858848789:table/Weddings"
+            - "arn:aws:dynamodb:ap-south-1:459858848789:table/GuestSessions"
+
+functions:
+  processImage:
+   
+    image:
+      name: appimage
+      dockerfile: Dockerfile
+      target: processImage
+    events:
+      - s3:
+          bucket: wedding-photoss
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: wedding-photos/
+
+ 
+
+# This section defines our database tables
+resources:
+  Resources:
+    # Definition for our Weddings Table
+    WeddingsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Weddings
+        AttributeDefinitions:
+          - AttributeName: WeddingID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: WeddingID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Definition for our Photos Table
+    PhotosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Photos
+        AttributeDefinitions:
+          - AttributeName: ImageKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ImageKey
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Definition for our GuestSessions Table with auto-cleanup
+    GuestSessionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: GuestSessions
+        AttributeDefinitions:
+          - AttributeName: SessionID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: SessionID
+            KeyType: HASH 
+        TimeToLiveSpecification:
+          AttributeName: ExpiresAt
+          Enabled: true
+        BillingMode: PAY_PER_REQUEST
