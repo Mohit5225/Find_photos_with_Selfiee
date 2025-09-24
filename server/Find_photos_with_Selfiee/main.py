@@ -1,5 +1,5 @@
 def main():
-    print("Hello from find-photos-with-selfiee!")
+    print("Hello from find-photos-with-selfieee!")
 
 
 if __name__ == "__main__":
