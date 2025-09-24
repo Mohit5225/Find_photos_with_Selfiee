@@ -14,7 +14,7 @@ def create_rekognition_collection(collection_id):
         print(f"Status code: {response['StatusCode']}")
         return response
     except client.exceptions.ResourceAlreadyExistsException:
-        print(f"Collection '{collection_id}' already exists. No action taken.")
+        print(f"Collection '{collection_id}' already exists. NO action taken.")
     except Exception as e:
         print(f"Error creating collection: {e}")
 
