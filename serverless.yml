@@ -3,12 +3,11 @@ service: wedding-photo-app
 
 provider:
   name: aws
-  # REMOVED runtime: python3.9 because we are using Docker
   region: ap-south-1
   ecr:
     images:
       appimage:
-        path: . # The Dockerfile is in the root directory
+        path: . # This correctly points to the root, where your Dockerfile is
 
   iam:
     role:
@@ -28,18 +27,16 @@ provider:
 
 functions:
   processImage:
-   
     image:
       name: appimage
       dockerfile: Dockerfile
-      target: processImage
+      target: processimage # Using lowercase to match the corrected Dockerfile
     events:
       - s3:
           bucket: wedding-photoss
           event: s3:ObjectCreated:*
           rules:
             - prefix: wedding-photos/
-
  
 
 # This section defines our database tables
