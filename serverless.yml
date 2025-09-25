@@ -1,14 +1,16 @@
+# This is the new, architecturally sound serverless.yml
+
 org: orgg1
 service: wedding-photo-app
+frameworkVersion: '4' # Pin the framework version for stability
 
 provider:
   name: aws
   region: ap-south-1
-  ecr:
-    images:
-      appimage:
-        path: . # This correctly points to the root, where your Dockerfile is
+  # The entire 'ecr' block is REMOVED. GitHub Actions is now responsible for building.
 
+  # The IAM role is updated to use CloudFormation intrinsic functions.
+  # This makes it robust and allows it to work with the auto-named S3 bucket.
   iam:
     role:
       statements:
@@ -17,7 +19,8 @@ provider:
           Resource: "arn:aws:rekognition:ap-south-1:459858848789:collection/*"
         - Effect: "Allow"
           Action: ["s3:GetObject"]
-          Resource: "arn:aws:s3:::wedding-photoss/*"
+          # This now correctly references the logical bucket resource defined below.
+          Resource: { "Fn::Join": ["", [{ "Fn::GetAtt": ["WeddingPhotosBucket", "Arn"] }, "/*"]] }
         - Effect: "Allow"
           Action: ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem"]
           Resource: 
@@ -27,22 +30,35 @@ provider:
 
 functions:
   processImage:
+    # This section is COMPLETELY REFACTORED.
+    # It no longer builds an image. It points to the pre-built image URI
+    # passed in from the GitHub Actions workflow.
     image:
-      name: appimage
-      dockerfile: Dockerfile
-      target: processimage # Using lowercase to match the corrected Dockerfile
+      uri: ${param:imageUri} 
     events:
       - s3:
-          bucket: wedding-photoss
+          # This now references the logical resource name of the bucket.
+          # The 'Ref' function gets the bucket's actual name at deploy time.
+          bucket: { Ref: WeddingPhotosBucket }
           event: s3:ObjectCreated:*
           rules:
             - prefix: wedding-photos/
- 
 
-# This section defines our database tables
 resources:
   Resources:
-    # Definition for our Weddings Table
+    # THIS IS THE NEW, CORRECT WAY TO DEFINE THE BUCKET.
+    # We give it a logical name ('WeddingPhotosBucket').
+    # By NOT specifying a 'BucketName', we command AWS to generate a unique one.
+    WeddingPhotosBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+    # Your DynamoDB table definitions are fine, so they remain unchanged.
     WeddingsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -55,7 +71,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-    # Definition for our Photos Table
     PhotosTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -68,7 +83,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-    # Definition for our GuestSessions Table with auto-cleanup
     GuestSessionsTable:
       Type: AWS::DynamoDB::Table
       Properties:

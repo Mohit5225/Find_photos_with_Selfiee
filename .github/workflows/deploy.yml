@@ -23,7 +23,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push processImage to ECR
+      - name: Build, tag, and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
@@ -33,9 +33,11 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Deploy with Serverless Framework
-        # This 'env' block makes your new key available to the commands below
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.AWS_SERVERLESS_FRAMEWORK_LOGIN_KEY }}
         run: |
           npm install -g serverless
-          serverless deploy --stage dev
+          # CONSTRUCT THE FULL IMAGE URI from the previous steps' outputs
+          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}"
+          # DEPLOY, passing the image URI in as a parameter for serverless.yml to use
+          serverless deploy --stage dev --param="imageUri=${IMAGE_URI}"
