@@ -41,3 +41,4 @@ jobs:
           IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}"
           # DEPLOY, passing the image URI in as a parameter for serverless.yml to use
           serverless deploy --stage dev --param="imageUri=${IMAGE_URI}"
+
