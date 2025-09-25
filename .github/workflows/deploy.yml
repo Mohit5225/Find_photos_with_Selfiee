@@ -19,29 +19,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # CORRECTED: Use the v2 action
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push processImage to ECR
         env:
-          # This is the registry URI provided by the login step
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          
-          # This is just the repository NAME from your secrets
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          
-          # This is the unique, immutable tag based on your git commit
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Here we construct the full, correct URI from the pieces
+          # --- START DEBUGGING BLOCK ---
+          echo "AWS Region from secrets: ${{ secrets.AWS_REGION }}"
+          echo "ECR Registry from login step: $ECR_REGISTRY"
+          echo "ECR Repository from secrets: '$ECR_REPOSITORY'" # The quotes are important to see whitespace
+          echo "Image Tag from GitHub SHA: $IMAGE_TAG"
+          echo "Full Image URI being built: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          # --- END DEBUGGING BLOCK ---
+          
           docker build --target processImage -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Deploy with Serverless Framework
         run: |
           npm install -g serverless
-          # We will need to update serverless.yml to use this new image tag
-          # For now, this will deploy the service definition
           serverless deploy --stage dev
