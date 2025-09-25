@@ -8,8 +8,10 @@ provider:
     images:
       appimage:
         path: .
+        # CORRECTED: Build details moved here
+        dockerfile: Dockerfile
+        target: processimage
 
-  # ADDED: This block gives our Lambda function the table names it needs.
   environment:
     PHOTOS_TABLE: !Ref PhotosTable
     WEDDINGS_TABLE: !Ref WeddingsTable
@@ -23,9 +25,9 @@ provider:
           Resource: "arn:aws:rekognition:ap-south-1:459858848789:collection/*"
         - Effect: "Allow"
           Action: ["s3:GetObject"]
-          Resource: "arn:aws:s3:::wedding-photoss/*"
+          # CORRECTED: Using a more unique bucket name
+          Resource: "arn:aws:s3:::wedding-photos-app-bucket-dev/*"
         - Effect: "Allow"
-          # CORRECTED: Fixed the typo here.
           Action: ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem"]
           Resource: 
             - "arn:aws:dynamodb:ap-south-1:459858848789:table/Photos"
@@ -34,21 +36,18 @@ provider:
 
 functions:
   processImage:
-    image:
-      name: appimage
-      dockerfile: Dockerfile
-      target: processimage
+    # CORRECTED: Simplified to just the image name
+    image: appimage 
     events:
       - s3:
-          bucket: wedding-photoss
+          # CORRECTED: Using a more unique bucket name
+          bucket: wedding-photos-app-bucket-dev
           event: s3:ObjectCreated:*
           rules:
             - prefix: wedding-photos/
 
-# This section defines our database tables
 resources:
   Resources:
-    # Definition for our Weddings Table
     WeddingsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -61,7 +60,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-    # Definition for our Photos Table
     PhotosTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -74,7 +72,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-    # Definition for our GuestSessions Table with auto-cleanup
     GuestSessionsTable:
       Type: AWS::DynamoDB::Table
       Properties:
