@@ -29,18 +29,13 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # --- START DEBUGGING BLOCK ---
-          echo "AWS Region from secrets: ${{ secrets.AWS_REGION }}"
-          echo "ECR Registry from login step: $ECR_REGISTRY"
-          echo "ECR Repository from secrets: '$ECR_REPOSITORY'" # The quotes are important to see whitespace
-          echo "Image Tag from GitHub SHA: $IMAGE_TAG"
-          echo "Full Image URI being built: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          # --- END DEBUGGING BLOCK ---
-          
           docker build --target processImage -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Deploy with Serverless Framework
+        # This 'env' block makes your new key available to the commands below
+        env:
+          SERVERLESS_ACCESS_KEY: ${{ secrets.AWS_SERVERLESS_FRAMEWORK_LOGIN_KEY }}
         run: |
           npm install -g serverless
           serverless deploy --stage dev
